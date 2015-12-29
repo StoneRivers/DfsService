@@ -42,6 +42,7 @@ public class ServerService {
                     response.connect("tcp://*:5556");
 
                     while (!Thread.currentThread().isInterrupted()) {
+                        logger.debug("waitting for data");
                         byte[] requestBytes = response.recv();
                         logger.debug(Arrays.toString(requestBytes));
                         BasePackage basePackage = new BasePackage(requestBytes);
@@ -55,12 +56,14 @@ public class ServerService {
                             errorMsg = e.getMessage();
                             logger.warn("SC:"+statusCode+" "+errorMsg);
                             e.printStackTrace();
+                            response.send(new byte[]{});
                             continue;
                         } catch (CrcCheckErrorException e) {
                             statusCode = 2;
                             errorMsg = e.getMessage();
                             logger.warn("SC:"+statusCode+" "+errorMsg);
                             e.printStackTrace();
+                            response.send(new byte[]{});
                             continue;
                         } catch (Exception e) {
                             statusCode = 3;
